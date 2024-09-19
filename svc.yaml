@@ -1,0 +1,51 @@
+service:
+  name: svc1
+  identifier: svc12
+  orgIdentifier: default
+  projectIdentifier: DoNotDeletemani5htest
+  tags: {}
+  gitOpsEnabled: true
+  serviceDefinition:
+    spec:
+      manifests:
+        - manifest:
+            identifier: test
+            type: ReleaseRepo
+            spec:
+              store:
+                type: Github
+                spec:
+                  connectorRef: account.deploymentRepo
+                  gitFetchType: Branch
+                  paths:
+                    - <+service.name>/app1/<+env.name>/<+cluster.name>/config.yaml
+                  branch: service1automation
+      artifacts:
+        primary:
+          identifier: ""
+          spec:
+            version: <+input>
+            timeout: 30m
+            scripts:
+              fetchAllArtifacts:
+                artifactsArrayPath: items
+                versionPath: name
+                spec:
+                  shell: Bash
+                  source:
+                    spec:
+                      script: |-
+                        TAGS=$(curl -H "Authorization: token <+secrets.getValue("account.meenaPAT")>" -H "Accept: application/json+v3"  https://api.github.com/repos/wings-software/gitops-automation/tags)
+                        echo $TAGS
+
+                        read -r -d '' VAR << EOM
+                        {
+                            "items":
+                            $TAGS
+                        }
+                        EOM
+
+                        echo $VAR > $HARNESS_ARTIFACT_RESULT_PATH
+                    type: Inline
+          type: CustomArtifact
+    type: Kubernetes
