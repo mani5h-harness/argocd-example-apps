@@ -24,7 +24,7 @@ service:
         primary:
           identifier: ""
           spec:
-            version: <+input>
+            version: k8s-v0.1
             timeout: 30m
             scripts:
               fetchAllArtifacts:
