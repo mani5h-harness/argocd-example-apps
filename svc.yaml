@@ -4,7 +4,6 @@ service:
   orgIdentifier: default
   projectIdentifier: DoNotDeletemani5htest
   tags: {}
-  gitOpsEnabled: true
   serviceDefinition:
     spec:
       manifests:
