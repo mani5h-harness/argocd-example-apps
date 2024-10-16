@@ -1,1 +1,9 @@
-{"abc":"123"}
+{
+  "a" : {
+    "b" : {
+      "c" : "svcAbc"
+    }
+  },
+  "abc" : "123",
+  "stepVar" : "koyanisqatsi"
+}
