@@ -17,4 +17,4 @@ spec:
       name: http
   selector:
     app: {{ template "helm-guestbook.name" . }}
-    release: {{ .Release.Name }}
+    # release: {{ .Release.Name }}
