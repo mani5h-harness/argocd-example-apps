@@ -1,24 +1,24 @@
-apiVersion: "0.1.0"
+apiVersion: 0.1.0
 environments:
   default:
+    path: default
     destination:
+      server: https://kubernetes.default.svc
       namespace: "blab\n\t\nlabla"
-      server: "https://kubernetes.default.svc"
-    path: "default"
-    k8sVersion: "v1.10.0"
+    k8sVersion: v1.10.0
   prod:
-    path: "prod"
+    path: prod
     destination:
-      server: "https://kubernetes.default.svc"
-      namespace: "prod"
-    k8sVersion: "v1.10.0"
+      server: https://kubernetes.default.svc
+      namespace: prod
+    k8sVersion: v1.10.0
   dev:
-    path: "dev"
+    path: dev
     destination:
-      server: "https://kubernetes.default.svc"
-      namespace: "dev"
-    k8sVersion: "v1.10.0"
-kind: "ksonnet.io/app"
-bla: "bla"
-name: "bestbook"
-version: "0.0.1"
+      server: https://kubernetes.default.svc
+      namespace: dev
+    k8sVersion: v1.10.0
+kind: ksonnet.io/app
+bla: bla
+name: bestbook
+version: 0.0.1
