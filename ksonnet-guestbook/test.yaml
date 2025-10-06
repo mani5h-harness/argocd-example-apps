@@ -1,0 +1,119 @@
+# ===================================================================
+# FINAL COMPREHENSIVE TEST SUITE
+# ===================================================================
+# This file combines all previous tests and adds new ones for
+# advanced YAML features like anchors, aliases, and tags.
+#
+# INSTRUCTIONS:
+# Run your update tool on this file. Change a single, simple value,
+# for example, the 'replicas' count in the Deployment.
+# Then, carefully diff the output with this original file to check
+# for any unintended changes in quoting, formatting, or data types.
+# ===================================================================
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quote-test-deployment
+  annotations:
+    # --- TYPE PRESERVATION & SPECIAL CHARS ---
+    "booleans.as.string/is-enabled": "true"
+    "numbers.as.string/version-id": "12345"
+    "octal.as.string/permission-code": "0755" # Must not become the integer 429
+    "null.as.string/optional-field": "null"
+    "special.chars/config-map-ref": "key: value"
+    "escaped.chars/json-snippet": "{\"key\": \"value with a \\\"quote\\\" and a newline\\n\"}"
+spec:
+  replicas: 1 # This is a good value to target for an update
+  selector:
+    matchLabels:
+      app: quote-test
+  template:
+    metadata:
+      labels:
+        app: quote-test
+    spec:
+      # --- ANCHORS & ALIASES TEST ---
+      # The env block below is defined as an anchor (&).
+      # It is then reused in the next container via an alias (*).
+      # JSON has no concept of this, so the data will be duplicated.
+      # The key is to ensure the values within it are preserved correctly.
+      initContainers:
+        - name: setup
+          image: busybox:1.36
+          env: &container-env-base
+            - name: ENABLE_FEATURE_X
+              value: "false" # Must remain a string
+            - name: MAX_RETRIES
+              value: "5" # Must remain a string
+            - name: POD_NAME
+              value: "quote-test-pod" # Should remain unquoted
+      containers:
+        - name: nginx
+          image: nginx:1.25.2
+          resources:
+            limits:
+              cpu: "500m" # Must remain a string
+              memory: "128Mi"
+          # Here we use the alias (*) to reuse the env block
+          env: *container-env-base
+          args:
+            - "8080"         # Must remain a string, not number 8080
+            - "off"          # Must remain a string, not boolean false
+            - "special: arg" # Must remain quoted
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: quote-test-config
+data:
+  # --- BLOCK SCALARS & MULTI-LINE STRINGS ---
+  app.properties: |
+    # This is a literal block scalar.
+    # It must not be converted to a giant quoted string.
+    service.url=http://example.com
+  welcome-message.txt: >
+    This is a folded block scalar.
+    Newlines are converted to spaces.
+  multi-line-quoted-string: "This is the first line of a long string \
+    that continues on the second line. The backslash at the end of the first line \
+    preserves the line break."
+
+  # --- YAML TAGS TEST ---
+  # Tags explicitly define the type. JSON does not support tags.
+  # The YAML generator must preserve the *intent* by ensuring the
+  # output is a string, likely by adding quotes.
+  explicit-string: !!str 123.45
+  explicit-integer: !!int 123
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: special-char-secret-test
+type: Opaque
+stringData:
+  # --- SINGLE QUOTES, SPACES & STANDALONE CHARS ---
+  # Single quotes treat backslashes literally. This must be preserved.
+  windows-path: 'C:\Users\Test'
+
+  # These values must remain quoted to be strings.
+  is-a-dash: "-"
+  is-a-colon: ":"
+  is-just-a-space: " "
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: quote-test-service
+spec:
+  selector:
+    app: quote-test
+  # --- FLOW STYLE TEST ---
+  # This ports block uses inline "flow" style instead of block style.
+  # A robust YAML generator should preserve this formatting, but many
+  # will convert it to the more common block style. While not a data
+  # corruption issue, it's a significant formatting change to watch for.
+  ports: [ { protocol: TCP, port: 80, targetPort: 8080 } ]
