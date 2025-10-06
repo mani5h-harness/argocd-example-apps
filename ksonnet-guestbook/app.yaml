@@ -2,7 +2,7 @@ apiVersion: "0.1.0"
 environments:
   default:
     destination:
-      namespace: "blablabla"
+      namespace: "blab\n\t\nlabla"
       server: "https://kubernetes.default.svc"
     path: "default"
     k8sVersion: "v1.10.0"
