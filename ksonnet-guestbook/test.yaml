@@ -1,97 +1,94 @@
-# ===================================================================
-# FINAL COMPREHENSIVE TEST SUITE (Single Document List)
-# ===================================================================
-# This version wraps all resources in a "kind: List" to avoid
-# duplicate top-level keys like "apiVersion" for tools that process
-# the file as a single document.
-# ===================================================================
-apiVersion: v1
-kind: List
+apiVersion: "v1"
+test: "rest11"
+kind: "List"
+pip: "6ft7TXlWRMCbGi8W30Cl-w"
+bla: "bla"
+num: "12"
+override: "test"
 items:
-- apiVersion: apps/v1
-  kind: Deployment
-  metadata:
-    name: quote-test-deployment
+- metadata:
+    name: "quote-test-deployment"
     annotations:
-      # --- TYPE PRESERVATION & SPECIAL CHARS ---
-      "booleans.as.string/is-enabled": "true"
-      "numbers.as.string/version-id": "12345"
-      "octal.as.string/permission-code": "0755" # Must not become the integer 429
-      "null.as.string/optional-field": "null"
-      "special.chars/config-map-ref": "key: value"
-      "escaped.chars/json-snippet": "{\"key\": \"value with a \\\"quote\\\" and a newline\\n\"}"
+      special.chars/config-map-ref: "key: value"
+      null.as.string/optional-field: "null"
+      octal.as.string/permission-code: "0755"
+      escaped.chars/json-snippet: "{\"key\": \"value with a \\\"quote\\\" and a newline\\\
+        n\"}"
+      booleans.as.string/is-enabled: "true"
+      numbers.as.string/version-id: "12345"
+  apiVersion: "apps/v1"
+  kind: "Deployment"
   spec:
-    replicas: 1
-    selector:
-      matchLabels:
-        app: quote-test
     template:
       metadata:
         labels:
-          app: quote-test
+          app: "quote-test"
       spec:
-        # --- ANCHORS & ALIASES TEST ---
-        initContainers:
-          - name: setup
-            image: busybox:1.36
-            env: &container-env-base
-              - name: ENABLE_FEATURE_X
-                value: "false" # Must remain a string
-              - name: MAX_RETRIES
-                value: "5" # Must remain a string
-              - name: POD_NAME
-                value: "quote-test-pod" # Should remain unquoted
         containers:
-          - name: nginx
-            image: nginx:1.25.2
-            resources:
-              limits:
-                cpu: "500m" # Must remain a string
-                memory: "128Mi"
-            env: *container-env-base
-            args:
-              - "8080"         # Must remain a string, not number 8080
-              - "off"          # Must remain a string, not boolean false
-              - "special: arg" # Must remain quoted
-
-- apiVersion: v1
-  kind: ConfigMap
-  metadata:
-    name: quote-test-config
+        - args:
+          - "8080"
+          - "off"
+          - "special: arg"
+          image: "nginx:1.25.2"
+          name: "nginx"
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          env:
+          - name: "ENABLE_FEATURE_X"
+            value: "false"
+          - name: "MAX_RETRIES"
+            value: "5"
+          - name: "POD_NAME"
+            value: "quote-test-pod"
+        initContainers:
+        - image: "busybox:1.36"
+          name: "setup"
+          env:
+          - name: "ENABLE_FEATURE_X"
+            value: "false"
+          - name: "MAX_RETRIES"
+            value: "5"
+          - name: "POD_NAME"
+            value: "quote-test-pod"
+    selector:
+      matchLabels:
+        app: "quote-test"
+    replica: "2"
+    replicas: 1
+- metadata:
+    name: "quote-test-config"
+  apiVersion: "v1"
   data:
-    # --- BLOCK SCALARS & MULTI-LINE STRINGS ---
-    app.properties: |
-      # This is a literal block scalar.
-      # It must not be converted to a giant quoted string.
-      service.url=http://example.com
-    welcome-message.txt: >
-      This is a folded block scalar.
-      Newlines are converted to spaces.
-    multi-line-quoted-string: "This is the first line of a long string \
-      that continues on the second line. The backslash at the end of the first line \
-      preserves the line break."
-    # --- YAML TAGS TEST ---
-    explicit-string: !!str 123.45
-    explicit-integer: !!int 123
-
-- apiVersion: v1
-  kind: Secret
-  metadata:
-    name: special-char-secret-test
-  type: Opaque
+    app.properties: "# This is a literal block scalar.\n# It must not be converted\
+      \ to a giant quoted string.\nservice.url=http://example.com\n"
+    explicit-integer: 123
+    welcome-message.txt: "This is a folded block scalar. Newlines are converted to\
+      \ spaces.\n"
+    explicit-string: "123.45"
+    multi-line-quoted-string: "This is the first line of a long string that continues\
+      \ on the second line. The backslash at the end of the first line preserves the\
+      \ line break."
+  kind: "ConfigMap"
+- metadata:
+    name: "special-char-secret-test"
+  apiVersion: "v1"
+  kind: "Secret"
+  type: "Opaque"
   stringData:
-    # --- SINGLE QUOTES, SPACES & STANDALONE CHARS ---
-    windows-path: 'C:\Users\Test'
+    windows-path: "C:\\Users\\Test"
     is-a-dash: "-"
-    is-a-colon: ":"
     is-just-a-space: " "
-
-- apiVersion: v1
-  kind: Service
-  metadata:
-    name: quote-test-service
+    is-a-colon: ":"
+- metadata:
+    name: "quote-test-service"
+  apiVersion: "v1"
+  kind: "Service"
   spec:
     selector:
-      app: quote-test
-    # --- FLOW STYLE TEST ---
-    ports: [ { protocol: TCP, port: 80, targetPort: 8080 } ]
+      app: "quote-test"
+    ports:
+    - protocol: "TCP"
+      port: 80
+      targetPort: 8080
