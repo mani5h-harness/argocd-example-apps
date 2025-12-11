@@ -1,1 +1,1 @@
-mySecretPassword: <+secret.getValue("account.GitlabSecretMb4C5")
+mySecretPassword: <+secret.getValue("account.GitlabSecretMb4C5")>
