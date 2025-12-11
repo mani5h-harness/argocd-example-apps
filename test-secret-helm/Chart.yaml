@@ -1,0 +1,6 @@
+apiVersion: v2
+name: my-secret-chart
+description: A minimal chart for a secret
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
