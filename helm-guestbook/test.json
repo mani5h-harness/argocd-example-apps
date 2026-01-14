@@ -1,22 +1,38 @@
 {
+  "apiVersion": "apps/v1",
+  "kind": "Deployment",
   "metadata": {
-    "appName": "harness-test-app",
-    "region": "us-east-1"
+    "name": "harness-test-app"
   },
   "spec": {
     "replicas": 2,
-    "image": "my-docker-repo/app:v1.0.0",
-    "resources": {
-      "cpu": "500m",
-      "memory": "1024Mi"
+    "template": {
+      "spec": {
+        "containers": [
+          {
+            "name": "main-container",
+            "image": "nginx:1.21",
+            "args": [
+              "start-server"
+            ],
+            "command": [
+              "/bin/sh",
+              "-c"
+            ],
+            "ports": [
+              {
+                "containerPort": 80
+              }
+            ],
+            "env": [
+              {
+                "name": "ENABLE_LOGS",
+                "value": "true"
+              }
+            ]
+          }
+        ]
+      }
     }
-  },
-  "environments": [
-    "development",
-    "staging"
-  ],
-  "labels": {
-    "tier": "frontend",
-    "version": "1.0.0"
   }
 }
