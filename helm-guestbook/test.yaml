@@ -1,0 +1,24 @@
+# Metadata for the application
+app_info:
+  name: "harness-demo-app"
+  owner: "devops-team"
+
+# Deployment specifications
+deployment:
+  replicas: 1
+  containers:
+    - name: main-app
+      image: "my-docker-repo/app:1.0.0"
+      port: 8080
+    - name: sidecar-proxy
+      image: "envoyproxy/envoy:v1.20"
+
+# Environment specific flags
+features:
+  enable_caching: false
+  max_retries: 3
+
+# List of allowed regions
+regions:
+  - "us-east-1"
+  - "eu-west-1"
