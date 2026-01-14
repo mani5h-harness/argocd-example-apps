@@ -11,7 +11,7 @@
         "containers" : [ {
           "name" : "main-container",
           "image" : "nginx:1.21",
-          "args" : [ "start-server" ],
+          "args" : [ "--config=\"/etc/app/config.yaml\" --debug=true" ],
           "command" : [ "/bin/sh", "-c" ],
           "ports" : [ {
             "containerPort" : 80
