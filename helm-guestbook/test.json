@@ -1,0 +1,22 @@
+{
+  "metadata": {
+    "appName": "harness-test-app",
+    "region": "us-east-1"
+  },
+  "spec": {
+    "replicas": 2,
+    "image": "my-docker-repo/app:v1.0.0",
+    "resources": {
+      "cpu": "500m",
+      "memory": "1024Mi"
+    }
+  },
+  "environments": [
+    "development",
+    "staging"
+  ],
+  "labels": {
+    "tier": "frontend",
+    "version": "1.0.0"
+  }
+}
