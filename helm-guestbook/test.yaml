@@ -16,7 +16,8 @@ spec:
       - name: main-container
         image: nginx:1.21
         args:
-        - start-server
+        - '--config="/etc/app/config.yaml" --debug=true'
+        - "--config=\"/etc/app/config.yaml\" --debug=true"
         command:
         - /bin/sh
         - -c
