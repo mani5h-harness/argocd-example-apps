@@ -1,22 +1,22 @@
 {
-  "metadata": {
-    "appName": "harness-test-app",
-    "region": "us-east-1"
+  "metadata" : {
+    "appName" : "harness-test-app",
+    "region" : "us-east-1"
   },
-  "spec": {
-    "replicas": 2,
-    "image": "my-docker-repo/app:v1.0.0",
-    "resources": {
-      "cpu": "500m",
-      "memory": "1024Mi"
+  "envTag" : "test",
+  "environments" : [ "development", "staging" ],
+  "serviceTag" : "testurrjson",
+  "spec" : {
+    "image" : "my-docker-repo/app:v1.0.0",
+    "replicas" : 2,
+    "resources" : {
+      "memory" : "1024Mi",
+      "cpu" : "500m"
     }
   },
-  "environments": [
-    "development",
-    "staging"
-  ],
-  "labels": {
-    "tier": "frontend",
-    "version": "1.0.0"
-  }
+  "labels" : {
+    "tier" : "frontend",
+    "version" : "1.0.0"
+  },
+  "pipelineId" : "vQXrTUvqQJy9WV4jFZ0Kjg"
 }
