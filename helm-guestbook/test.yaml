@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: harness-test-app
 spec:
-  replicas: 2
+  replicas: 3
   selector:
     matchLabels:
       app: web
@@ -13,11 +13,11 @@ spec:
         app: web
     spec:
       containers:
-      - name: main-container
+      - name: updated
         image: nginx:1.21
         args:
-        - '--config="/etc/app/config.yaml" --debug=true'
-        - "--config=\"/etc/app/config.yaml\" --debug=true"
+        - --config="/etc/app/config.yaml" --debug=true
+        - --config="/etc/app/config.yaml" --debug=true
         command:
         - /bin/sh
         - -c
