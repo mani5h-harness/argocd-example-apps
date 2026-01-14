@@ -1,10 +1,3 @@
-# ===================================================================
-# FINAL COMPREHENSIVE TEST SUITE (Single Document List)
-# ===================================================================
-# This version wraps all resources in a "kind: List" to avoid
-# duplicate top-level keys like "apiVersion" for tools that process
-# the file as a single document.
-# ===================================================================
 apiVersion: v1
 kind: List
 items:
@@ -13,13 +6,12 @@ items:
   metadata:
     name: quote-test-deployment
     annotations:
-      # --- TYPE PRESERVATION & SPECIAL CHARS ---
-      "booleans.as.string/is-enabled": "true"
-      "numbers.as.string/version-id": "12345"
-      "octal.as.string/permission-code": "0755" # Must not become the integer 429
-      "null.as.string/optional-field": "null"
-      "special.chars/config-map-ref": "key: value"
-      "escaped.chars/json-snippet": "{\"key\": \"value with a \\\"quote\\\" and a newline\\n\"}"
+      booleans.as.string/is-enabled: 'true'
+      numbers.as.string/version-id: '12345'
+      octal.as.string/permission-code: '0755'
+      null.as.string/optional-field: 'null'
+      special.chars/config-map-ref: 'key: value'
+      escaped.chars/json-snippet: '{"key": "value with a \"quote\" and a newline\n"}'
   spec:
     replicas: 1
     selector:
@@ -30,62 +22,52 @@ items:
         labels:
           app: quote-test
       spec:
-        # --- ANCHORS & ALIASES TEST ---
         initContainers:
-          - name: setup
-            image: busybox:1.36
-            env: &container-env-base
-              - name: ENABLE_FEATURE_X
-                value: "false" # Must remain a string
-              - name: MAX_RETRIES
-                value: "5" # Must remain a string
-              - name: POD_NAME
-                value: "quote-test-pod" # Should remain unquoted
+        - name: setup
+          image: busybox:1.36
+          env: &id001
+          - name: ENABLE_FEATURE_X
+            value: 'false'
+          - name: MAX_RETRIES
+            value: '5'
+          - name: POD_NAME
+            value: quote-test-pod
         containers:
-          - name: nginx
-            image: nginx:1.25.2
-            resources:
-              limits:
-                cpu: "500m" # Must remain a string
-                memory: "128Mi"
-            env: *container-env-base
-            args:
-              - "8080"         # Must remain a string, not number 8080
-              - "off"          # Must remain a string, not boolean false
-              - "special: arg" # Must remain quoted
-
+        - name: nginx
+          image: nginx:1.25.2
+          resources:
+            limits:
+              cpu: 500m
+              memory: 128Mi
+          env: *id001
+          args:
+          - '8080'
+          - 'off'
+          - 'special: arg'
 - apiVersion: v1
   kind: ConfigMap
   metadata:
     name: quote-test-config
   data:
-    # --- BLOCK SCALARS & MULTI-LINE STRINGS ---
     app.properties: |
       # This is a literal block scalar.
       # It must not be converted to a giant quoted string.
       service.url=http://example.com
-    welcome-message.txt: >
-      This is a folded block scalar.
-      Newlines are converted to spaces.
-    multi-line-quoted-string: "This is the first line of a long string \
-      that continues on the second line. The backslash at the end of the first line \
-      preserves the line break."
-    # --- YAML TAGS TEST ---
-    explicit-string: !!str 123.45
-    explicit-integer: !!int 123
-
+    welcome-message.txt: |
+      This is a folded block scalar. Newlines are converted to spaces.
+    multi-line-quoted-string: This is the first line of a long string that continues on the second line. The backslash at the end of the first line preserves the line break.
+    explicit-string: '123.45'
+    explicit-integer: 123
 - apiVersion: v1
   kind: Secret
   metadata:
     name: special-char-secret-test
   type: Opaque
   stringData:
-    # --- SINGLE QUOTES, SPACES & STANDALONE CHARS ---
-    windows-path: 'C:\Users\Test'
-    is-a-dash: "-"
-    is-a-colon: ":"
-    is-just-a-space: " "
-
+    windows-path: C:\Users\Test
+    is-a-dash: '-'
+    is-a-colon: ':'
+    is-just-a-space: ' '
 - apiVersion: v1
   kind: Service
   metadata:
@@ -93,5 +75,12 @@ items:
   spec:
     selector:
       app: quote-test
-    # --- FLOW STYLE TEST ---
-    ports: [ { protocol: TCP, port: 80, targetPort: 8080 } ]
+    ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+bla: bla
+a:
+  b:
+    c:
+      d: sadf
