@@ -1,24 +1,27 @@
-# Metadata for the application
-app_info:
-  name: "harness-demo-app"
-  owner: "devops-team"
-
-# Deployment specifications
-deployment:
-  replicas: 1
-  containers:
-    - name: main-app
-      image: "my-docker-repo/app:1.0.0"
-      port: 8080
-    - name: sidecar-proxy
-      image: "envoyproxy/envoy:v1.20"
-
-# Environment specific flags
-features:
-  enable_caching: false
-  max_retries: 3
-
-# List of allowed regions
-regions:
-  - "us-east-1"
-  - "eu-west-1"
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: harness-test-app
+spec:
+  replicas: 2 # Test Case: existingNumber-replicas
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+        - name: main-container
+          image: "nginx:1.21" # Test Case: existingString-image
+          args: 
+            - "start-server" # Test Case: existingString-argsWithQuotes
+          command: # Test Case: existingList-commandShapeUnchanged
+            - /bin/sh
+            - -c
+          ports:
+            - containerPort: 80 # Test Case: existingNumber-containerPort
+          env:
+            - name: ENABLE_LOGS
+              value: "true" # Test Case: existingString-boolLookingEnv
