@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "app.fullname" . }}-extra-config-67
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+data:
+  CONFIG_KEY_67: "value-67"
+  BATCH_ID: "67"
+  TIMESTAMP: "2026-03-20"
+  DESCRIPTION: "Extra configuration map number 67 for load testing"

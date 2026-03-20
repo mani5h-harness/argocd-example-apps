@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "app.fullname" . }}-extra-config-82
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+data:
+  CONFIG_KEY_82: "value-82"
+  BATCH_ID: "82"
+  TIMESTAMP: "2026-03-20"
+  DESCRIPTION: "Extra configuration map number 82 for load testing"

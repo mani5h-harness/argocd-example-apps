@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "app.fullname" . }}-extra-config-133
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+data:
+  CONFIG_KEY_133: "value-133"
+  BATCH_ID: "133"
+  TIMESTAMP: "2026-03-20"
+  DESCRIPTION: "Extra configuration map number 133 for load testing"

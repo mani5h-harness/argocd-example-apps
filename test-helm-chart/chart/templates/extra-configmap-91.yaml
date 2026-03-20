@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "app.fullname" . }}-extra-config-91
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+data:
+  CONFIG_KEY_91: "value-91"
+  BATCH_ID: "91"
+  TIMESTAMP: "2026-03-20"
+  DESCRIPTION: "Extra configuration map number 91 for load testing"

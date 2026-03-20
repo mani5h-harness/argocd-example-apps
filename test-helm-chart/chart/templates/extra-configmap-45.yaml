@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "app.fullname" . }}-extra-config-45
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+data:
+  CONFIG_KEY_45: "value-45"
+  BATCH_ID: "45"
+  TIMESTAMP: "2026-03-20"
+  DESCRIPTION: "Extra configuration map number 45 for load testing"
