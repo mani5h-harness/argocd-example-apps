@@ -1,0 +1,6 @@
+apiVersion: v2
+name: repro-large-chart
+description: Helm chart to reproduce SCM BatchFindFile RST_STREAM issue
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
