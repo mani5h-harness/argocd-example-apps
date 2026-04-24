@@ -49,3 +49,6 @@ to explore ArgoCD and GitOps!
 [badge_sock_shop]: https://cd.apps.argoproj.io/api/badge?revision=true&name=example.sock-shop
 [app_sync_waves]: https://cd.apps.argoproj.io/applications/example.sync-waves
 [badge_sync_waves]: https://cd.apps.argoproj.io/api/badge?revision=true&name=example.sync-waves
+
+
+test
