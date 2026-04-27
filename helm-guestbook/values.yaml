@@ -1,11 +1,11 @@
 image:
-  tag: v5
-  repository: gcr.io/google-samples/gb-frontend
-  pullPolicy: IfNotPresent
+  tag: "v5"
+  repository: "gcr.io/google-samples/gb-frontend"
+  pullPolicy: "IfNotPresent"
 ingress:
-  path: /
+  path: "/"
   hosts:
-  - chart-example.local
+  - "chart-example.local"
   annotations: {}
   tls: []
   enabled: false
@@ -13,7 +13,7 @@ replicaCount: 2
 tolerations: []
 service:
   port: 80
-  type: ClusterIP
+  type: "ClusterIP"
 containerPort: 80
 resources: {}
 nodeSelector: {}
