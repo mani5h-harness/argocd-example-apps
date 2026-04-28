@@ -51,4 +51,4 @@ to explore ArgoCD and GitOps!
 [badge_sync_waves]: https://cd.apps.argoproj.io/api/badge?revision=true&name=example.sync-waves
 
 
-test
+
