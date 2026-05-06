@@ -18,4 +18,4 @@ containerPort: 80
 resources: {}
 nodeSelector: {}
 affinity: {}
-executionMarker: 8qKWxbngTAeeqoimb6kDyQ
+executionMarker: cleanup
