@@ -4,6 +4,8 @@
 
 replicaCount: 22
 
+fullname: helm-guestbook
+
 image:
   repository: gcr.io/google-samples/gb-frontend
   tag: v5
