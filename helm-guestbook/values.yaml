@@ -1,3 +1,4 @@
+varWFM: 7tBEq2YHSP6oLDWnAGKPPw
 image:
   tag: v5
   repository: gcr.io/google-samples/gb-frontend
@@ -16,7 +17,6 @@ service:
   type: ClusterIP
 containerPort: 80
 resources: {}
+executionMarker: e6OTZdtBRUCeA3TAXfIIVw
 nodeSelector: {}
 affinity: {}
-executionMarker: e6OTZdtBRUCeA3TAXfIIVw
-varWFM: 7tBEq2YHSP6oLDWnAGKPPw
