@@ -8,11 +8,22 @@
 #
 # Net effect: this object gates a whole extra sync wave forever while accomplishing
 # nothing. Without `Prune=false` the repro would self-heal after one sync.
+#
+# `PruneLast=true` is carried here as a per-object annotation, not only as an
+# Application-level syncOption, because there are two independent routes into the
+# pruneLast branch at gitops-engine/pkg/sync/sync_context.go:1141-1145:
+#   sc.pruneLast                              <- Application/operation syncOption
+#   HasAnnotationOption(..., "PruneLast=true") <- this annotation
+# The Harness Sync step cannot use the first route: SyncOptionsEnum.PRUNE_LAST emits
+# the literal "pruneLast=true", while Argo's SyncOptions.HasOption does an exact
+# string match against "PruneLast=true" (capital P). So a Harness-driven sync never
+# sets sc.pruneLast, and the annotation is the only way to arm the repro from a
+# pipeline. See the "Harness sends the wrong casing" section of the README.
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: stale-config-abc123
   annotations:
-    argocd.argoproj.io/sync-options: Prune=false
+    argocd.argoproj.io/sync-options: Prune=false,PruneLast=true
 data:
   note: "orphaned on purpose - see suspended-rollout-prunelast/README.md"
