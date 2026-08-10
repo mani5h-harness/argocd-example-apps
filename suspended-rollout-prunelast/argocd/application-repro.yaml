@@ -1,0 +1,32 @@
+# The BROKEN case: PruneLast=true + a prunable resource + a Suspended Rollout.
+#
+# Note there is NO argocd.argoproj.io/sync-wave annotation anywhere in this app.
+# The second wave is synthesised by the engine itself:
+#   sync_context.go:1128-1145  ->  every prune task gets waveOverride = lastSyncWave + 1
+#   sync_tasks.go:274-276      ->  wave() != lastWave()  =>  multiStep() == true
+#   sync_context.go:577-598    ->  multiStep + a running task  =>  hold the wave forever
+#
+# Point `path` at step1-with-configmap first to establish the live ConfigMap, then
+# switch to step2-configmap-removed to arm the prune task. See ../README.md.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: suspended-rollout-prunelast-repro
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/mani5h-harness/argocd-example-apps.git
+    targetRevision: HEAD
+    path: suspended-rollout-prunelast/step2-configmap-removed
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: suspended-repro
+  syncPolicy:
+    # Deliberately NOT automated: the Harness Sync step (or `argocd app sync`)
+    # must be the thing that initiates the sync, otherwise selfHeal masks the stall.
+    syncOptions:
+      - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true
+      # >>> THIS is the line that turns a single-wave app into a multi-wave app. <<<
+      - PruneLast=true

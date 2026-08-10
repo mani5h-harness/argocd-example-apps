@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: suspended-repro
+spec:
+  replicas: 4
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: suspended-repro
+  template:
+    metadata:
+      labels:
+        app: suspended-repro
+    spec:
+      containers:
+        - name: rollouts-demo
+          image: argoproj/rollouts-demo:blue
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: 5m
+              memory: 32Mi
+  strategy:
+    canary:
+      steps:
+        - setWeight: 25
+        # An indefinite pause. This populates status.pauseConditions, which makes
+        # resource_customizations/argoproj.io/Rollout/health.lua report "Suspended".
+        # There is no `duration`, so the Rollout stays Suspended until it is
+        # promoted manually (or by the Sync step's autoPromoteRolloutBehavior).
+        - pause: {}
+        - setWeight: 75
+        - pause: { duration: 10 }

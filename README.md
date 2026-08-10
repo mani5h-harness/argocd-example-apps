@@ -20,6 +20,7 @@ to explore ArgoCD and GitOps!
 | [![App Status][badge_pre_post_sync]][app_pre_post_sync]                   | [pre-post-sync](pre-post-sync/)                    | Demonstrates Argo CD PreSync and PostSync hooks                                                                          |
 | [![App Status][badge_sock_shop]][app_sock_shop]                           | [sock-shop](sock-shop/)                            | A microservices demo app (https://microservices-demo.github.io)                                                          |
 | [![App Status][badge_sync_waves]][app_sync_waves]                         | [sync-waves](sync-waves/)                          | Demonstrates Argo CD sync waves with hooks                                                                               |
+| n/a                                                                       | [suspended-rollout-prunelast](suspended-rollout-prunelast/) | Repro: a Suspended Rollout deadlocks a sync because `PruneLast=true` synthesises a second wave (no sync-wave annotations) |
 
 [app_sync_example_apps]: https://cd.apps.argoproj.io/applications/sync-example-apps
 [badge_sync_example_apps]: https://cd.apps.argoproj.io/api/badge?revision=true&name=sync-example-apps

@@ -1,0 +1,18 @@
+# This ConfigMap exists only in step1. When the Application's `path` is switched to
+# step2-configmap-removed, it becomes live-but-not-in-git, i.e. a PRUNE task.
+#
+# `Prune=false` is deliberate and mirrors the Box production app: the prune task is
+# created (so it counts for wave computation) but is never actually executed —
+# pruneObject() returns PruneSkipped "ignored (no prune)"
+# (gitops-engine/pkg/sync/sync_context.go:1486).
+#
+# Net effect: this object gates a whole extra sync wave forever while accomplishing
+# nothing. Without `Prune=false` the repro would self-heal after one sync.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: stale-config-abc123
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false
+data:
+  note: "orphaned on purpose - see suspended-rollout-prunelast/README.md"

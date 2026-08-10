@@ -1,0 +1,33 @@
+# Second, independent way to satisfy multiStep() — no PruneLast, no prunes, no waves.
+#
+#   sync_tasks.go:274-276
+#     func (s syncTasks) multiStep() bool {
+#       return s.wave() != s.lastWave() || s.phase() != s.lastPhase()
+#     }                                     ^^^^^^^^^^^^^^^^^^^^^^^^^ this half
+#
+# A PostSync hook makes phase() == Sync while lastPhase() == PostSync, so the app is
+# multi-step and the Suspended Rollout in the Sync phase blocks the operation exactly
+# as it does in the PruneLast case.
+#
+# This is why "it should only happen with sync waves" is the wrong mental model: there
+# are three routes to multiStep() and only one of them involves a sync-wave annotation.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: postsync-smoke-test-
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: smoke-test
+          image: busybox:1.36
+          command: ["sh", "-c", "echo postsync smoke test ok"]
+          resources:
+            requests:
+              cpu: 5m
+              memory: 16Mi

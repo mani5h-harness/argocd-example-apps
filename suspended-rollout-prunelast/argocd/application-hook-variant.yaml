@@ -1,0 +1,21 @@
+# Variant C: multiStep() satisfied via the PHASE half instead of the WAVE half.
+# No PruneLast, no prunable resources, no sync-wave annotations — just a PostSync hook.
+# Expected result is the same stall as the PruneLast case.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: suspended-rollout-hook-variant
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/mani5h-harness/argocd-example-apps.git
+    targetRevision: HEAD
+    path: suspended-rollout-prunelast/step3-hook-no-prunelast
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: suspended-repro-hook
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true

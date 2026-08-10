@@ -1,0 +1,30 @@
+# CONTROL case: byte-for-byte identical to application-repro.yaml except that
+# PruneLast=true is absent.
+#
+# Expected: the Rollout still goes Suspended (health is unchanged), but the sync
+# operation reaches Succeeded with "successfully synced (all tasks run)" almost
+# immediately, because multiStep() is false so the health gate at
+# sync_context.go:577-598 never engages and the single-wave completion path at
+# sync_context.go:704-716 is taken instead.
+#
+# Running both apps side by side is what proves PruneLast is the variable, not the
+# paused Rollout on its own.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: suspended-rollout-control
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/mani5h-harness/argocd-example-apps.git
+    targetRevision: HEAD
+    path: suspended-rollout-prunelast/step2-configmap-removed
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: suspended-repro-control
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true
+      # no PruneLast=true
