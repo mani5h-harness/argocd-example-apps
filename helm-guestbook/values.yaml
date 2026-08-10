@@ -18,4 +18,3 @@ resources: {}
 nodeSelector: {}
 tolerations: []
 affinity: {}
-test: val
