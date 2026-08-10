@@ -15,7 +15,11 @@ spec:
     spec:
       containers:
         - name: rollouts-demo
-          image: argoproj/rollouts-demo:yellow
+          # Must be an image this Rollout has never fully promoted. Argo Rollouts
+          # treats a switch back to an already-promoted, still-in-history ReplicaSet
+          # as a fast rollback and skips the canary steps entirely (so no pause, no
+          # Suspended). revisionHistoryLimit: 2 above bounds that history.
+          image: argoproj/rollouts-demo:purple
           ports:
             - containerPort: 8080
           resources:
