@@ -7,12 +7,23 @@
 #
 # Fill in the <PLACEHOLDER> values for your account. The Sync step config below is
 # what matters:
-#   - waitTillHealthy: true   -> Harness polls for health
-#   - failOnTimeout: true     -> not actually what fails here; see note at bottom
+#   - waitTillHealthy: false  -> matches the customer pipeline. See note below.
+#   - failOnTimeout: false    -> forced: SyncRunnable.java:196-198 throws
+#                                IllegalStateException if failOnTimeout is set
+#                                while waitTillHealthy is not.
 #   - timeout: 10m            -> keep short so the repro finishes fast
 #
-# Note the step timeout deliberately shorter than the Rollout's indefinite pause, so
-# the poll loop in SyncRunnable.java:983-1129 is guaranteed to hit its deadline.
+# IMPORTANT: waitTillHealthy is NOT required to reproduce this, and turning it off does
+# NOT avoid it. waitTillHealthy is read in exactly one place — SyncRunnable.java:1035 —
+# inside the isApplicationSyncComplete branch and gated on isSyncSuccess. This deadlock
+# happens precisely because isApplicationSyncComplete is FALSE, so waitTillHealthy is
+# never consulted at all. The wait is imposed by the Argo engine, not by Harness.
+#
+# The step therefore fails via the "still running" branch at SyncStep.java:147-155,
+# not via the failOnTimeout branch at SyncStep.java:137-145.
+#
+# The step timeout is deliberately shorter than the Rollout's indefinite pause, so the
+# poll loop in SyncRunnable.java:983-1129 is guaranteed to hit its deadline.
 pipeline:
   name: suspended-rollout-prunelast-repro
   identifier: suspended_rollout_prunelast_repro
@@ -46,9 +57,10 @@ pipeline:
                     dryRun: false
                     applyOnly: false
                     forceApply: false
-                    # The two flags that drive the reported failure path:
-                    waitTillHealthy: true
-                    failOnTimeout: true
+                    # Both false, matching the customer pipeline. Neither is needed to
+                    # reproduce the stall — see the header note.
+                    waitTillHealthy: false
+                    failOnTimeout: false
                     # Optional: set to RESUME to demonstrate the second defect — that
                     # auto-promote never fires here, because applyAutoPromoteBehavior
                     # is only reachable from inside the isApplicationSyncComplete +

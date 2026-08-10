@@ -190,8 +190,32 @@ argocd app terminate-op suspended-rollout-prunelast-repro
    returned nothing.
 2. **Drop `PruneLast=true`.** Single wave, so the engine completes right after apply.
    Trade-off: prune ordering is lost.
-3. **Set `waitTillHealthy: false` on the Sync step.** Stops Harness waiting, but the Argo
-   operation is still stalled. A workaround, not a fix.
+3. ~~Set `waitTillHealthy: false` on the Sync step.~~ **This does not help.** See below.
+
+### `waitTillHealthy` is a red herring
+
+The customer pipeline had `waitTillHealthy: false` and still hit this. `waitTillHealthy`
+is read in exactly one place — `SyncRunnable.java:1035` — inside the
+`isApplicationSyncComplete(...)` branch and additionally gated on `isSyncSuccess(...)`:
+
+```java
+// SyncRunnable.java:1020, 1035
+if (isApplicationSyncComplete(currentApplicationState, syncStatus, syncStartTime, ...)) {
+  ...
+  if (isSyncSuccess(syncStatus) && waitTillHealthy) {   // <-- only reader
+```
+
+The deadlock occurs because `isApplicationSyncComplete` is **false** (Argo reports
+`Running`, which is not a terminal phase per `:1226-1230`). Execution never reaches line
+1035, so the flag's value is irrelevant. The waiting is imposed by the **Argo engine**
+holding the wave, not by Harness waiting on health.
+
+Corollary: `failOnTimeout` must also be false, because `SyncRunnable.java:196-198`
+throws `IllegalStateException("failOnTimeout set but waitTillHealthy not set")`.
+
+The step fails via the "still running" branch (`SyncStep.java:147-155`), never the
+`failOnTimeout` branch (`:137-145`) — so no combination of these two flags avoids it.
+Only fixes 1 and 2 above actually work.
 
 ## Cleanup
 
