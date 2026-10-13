@@ -1,0 +1,5 @@
+replicaCount: 4
+image:
+  repository: nginx
+  tag: 1.25.0
+env: prod-eu
