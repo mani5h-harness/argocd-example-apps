@@ -1,5 +1,5 @@
 replicaCount: 2
 image:
   repository: nginx
-  tag: 1.25.0
+  tag: v3.0.0
 env: staging-us
